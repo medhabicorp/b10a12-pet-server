@@ -32,6 +32,30 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    // JWT APIs
+    app.post('/jwt', async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: '1h'
+      });
+      res.send({ token })
+    })
+
+    // verify Token through MiddleWare
+    const verifyToken = (req, res, next) => {
+      // console.log('inside verify token', req.headers.authorization);
+      if (!req.headers.authorization) {
+        return res.status(401).send({ message: 'Unauthorized Access' })
+          }
+      const token = req.headers.authorization.split(' ')[1];
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+          if (err) {
+            return res.status(401).send({ message: 'Unauthorized Access' })
+            }
+            req.decoded = decoded;
+            next();
+          })
+        }
 
 
     // Connect the client to the server	(optional starting in v4.7)
