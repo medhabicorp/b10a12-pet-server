@@ -259,52 +259,52 @@ async function run() {
       res.send(result);
     });
 
-    // // Adoptions-related APIs
-    // app.get('/adoptions', async (req, res) => {
-    //   const result = await adoptionsCollection.find().toArray();
-    //   res.send(result);
-    // });
+    // Adoptions-related APIs
+    app.get('/adoptions', async (req, res) => {
+      const result = await adoptionsCollection.find().toArray();
+      res.send(result);
+    });
 
-    // app.get('/adoptions/user/:email', verifyToken, async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email: email };
-    //   const result = await adoptionsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.get('/adoptions/user/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await adoptionsCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    // app.post('/adoptions', async (req, res) => {
-    //   const petAdoptions = req.body;
-    //   const result = await adoptionsCollection.insertOne(petAdoptions);
-    //   res.send(result);
-    // });
+    app.post('/adoptions', async (req, res) => {
+      const petAdoptions = req.body;
+      const result = await adoptionsCollection.insertOne(petAdoptions);
+      res.send(result);
+    });
 
-    // app.patch('/adoptions/reject/:id', verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const updatedDoc = {
-    //     $set: {
-    //       status: 'reject'
-    //     }
-    //   };
-    //   const result = await adoptionsCollection.updateOne(query, updatedDoc, { upsert: true });
-    //   res.send(result);
-    // });
+    app.patch('/adoptions/reject/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          status: 'reject'
+        }
+      };
+      const result = await adoptionsCollection.updateOne(query, updatedDoc, { upsert: true });
+      res.send(result);
+    });
 
-    // app.patch('/adoptions/accept/:id', verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const updatedDoc = {
-    //     $set: {
-    //       status: 'accept'
-    //     }
-    //   };
-    //   const alreadyAccepted = await adoptionsCollection.findOne(query);
-    //   if (alreadyAccepted && alreadyAccepted.status === 'accept') {
-    //     return res.send({ message: 'Adoption request already accepted' });
-    //   }
-    //   const result = await adoptionsCollection.updateOne(query, updatedDoc, { upsert: true });
-    //   res.send(result);
-    // });
+    app.patch('/adoptions/accept/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          status: 'accept'
+        }
+      };
+      const alreadyAccepted = await adoptionsCollection.findOne(query);
+      if (alreadyAccepted && alreadyAccepted.status === 'accept') {
+        return res.send({ message: 'Adoption request already accepted' });
+      }
+      const result = await adoptionsCollection.updateOne(query, updatedDoc, { upsert: true });
+      res.send(result);
+    });
 
     // // Payment-related APIs
     // app.post('/create-payment-intent', async (req, res) => {
