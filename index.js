@@ -185,79 +185,79 @@ async function run() {
       res.send(result);
     });
 
-    // // Donation Campaigns-related APIs
-    // app.get('/donationCampaigns', async (req, res) => {
-    //   const result = await donationCampaignsCollection.find().sort({ createdAt: -1 }).toArray();
-    //   res.send(result);
-    // });
+    // Donation Campaigns-related APIs
+    app.get('/donationCampaigns', async (req, res) => {
+      const result = await donationCampaignsCollection.find().sort({ createdAt: -1 }).toArray();
+      res.send(result);
+    });
 
-    // app.get('/donationCampaigns/recommended', async (req, res) => {
-    //   const activeCampaigns = await donationCampaignsCollection
-    //     .find({ isDonationStopped: false })
-    //     .toArray();
-    //   const randomCampaigns = activeCampaigns
-    //     .sort(() => 0.5 - Math.random())
-    //     .slice(0, 3);
-    //   res.send(randomCampaigns);
-    // });
+    app.get('/donationCampaigns/recommended', async (req, res) => {
+      const activeCampaigns = await donationCampaignsCollection
+        .find({ isDonationStopped: false })
+        .toArray();
+      const randomCampaigns = activeCampaigns
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      res.send(randomCampaigns);
+    });
 
-    // app.get('/donationCampaigns/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const singlePetDonation = await donationCampaignsCollection.findOne(query);
-    //   res.send(singlePetDonation);
-    // });
+    app.get('/donationCampaigns/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const singlePetDonation = await donationCampaignsCollection.findOne(query);
+      res.send(singlePetDonation);
+    });
 
-    // app.get('/donationCampaigns/user/:email', verifyToken, async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { userEmail: email };
-    //   const result = await donationCampaignsCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.get('/donationCampaigns/user/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { userEmail: email };
+      const result = await donationCampaignsCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    // app.post('/donationCampaigns', verifyToken, async (req, res) => {
-    //   const donationCampaigns = req.body;
-    //   const result = await donationCampaignsCollection.insertOne(donationCampaigns);
-    //   res.send(result);
-    // });
+    app.post('/donationCampaigns', verifyToken, async (req, res) => {
+      const donationCampaigns = req.body;
+      const result = await donationCampaignsCollection.insertOne(donationCampaigns);
+      res.send(result);
+    });
 
-    // app.patch('/donationCampaigns/:id', verifyToken, async (req, res) => {
-    //   const donation = req.body;
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const updatedDoc = {
-    //     $set: {
-    //       name: donation.name,
-    //       maxDonation: donation.maxDonation,
-    //       lastDate: donation.lastDate,
-    //       petImage: donation.petImage,
-    //       shortDescription: donation.shortDescription,
-    //       longDescription: donation.longDescription
-    //     }
-    //   };
-    //   const result = await donationCampaignsCollection.updateOne(filter, updatedDoc);
-    //   res.send(result);
-    // });
+    app.patch('/donationCampaigns/:id', verifyToken, async (req, res) => {
+      const donation = req.body;
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          name: donation.name,
+          maxDonation: donation.maxDonation,
+          lastDate: donation.lastDate,
+          petImage: donation.petImage,
+          shortDescription: donation.shortDescription,
+          longDescription: donation.longDescription
+        }
+      };
+      const result = await donationCampaignsCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    });
 
-    // app.patch('/donationCampaigns/stop/:id', verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const { isDonationStopped } = req.body;
-    //   const query = { _id: new ObjectId(id) };
-    //   const updatedDoc = {
-    //     $set: {
-    //       isDonationStopped: isDonationStopped
-    //     }
-    //   };
-    //   const result = await donationCampaignsCollection.updateOne(query, updatedDoc, { upsert: true });
-    //   return res.send(result);
-    // });
+    app.patch('/donationCampaigns/stop/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const { isDonationStopped } = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          isDonationStopped: isDonationStopped
+        }
+      };
+      const result = await donationCampaignsCollection.updateOne(query, updatedDoc, { upsert: true });
+      return res.send(result);
+    });
 
-    // app.delete('/donationCampaigns/:id', verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const result = await donationCampaignsCollection.deleteOne(query);
-    //   res.send(result);
-    // });
+    app.delete('/donationCampaigns/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await donationCampaignsCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // // Adoptions-related APIs
     // app.get('/adoptions', async (req, res) => {
