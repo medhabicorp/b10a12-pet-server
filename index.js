@@ -306,86 +306,86 @@ async function run() {
       res.send(result);
     });
 
-    // // Payment-related APIs
-    // app.post('/create-payment-intent', async (req, res) => {
-    //   const { donationAmount } = req.body;
-    //   const amount = parseInt(donationAmount * 100);
-    //   const paymentIntent = await stripe.paymentIntents.create({
-    //     amount: amount,
-    //     currency: 'usd',
-    //     payment_method_types: ['card']
-    //   });
-    //   res.send({
-    //     clientSecret: paymentIntent.client_secret
-    //   });
-    // });
+    // Payment-related APIs
+    app.post('/create-payment-intent', async (req, res) => {
+      const { donationAmount } = req.body;
+      const amount = parseInt(donationAmount * 100);
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      });
+    });
 
-    // app.post('/payments', async (req, res) => {
-    //   const payment = req.body;
-    //   try {
-    //     const paymentResult = await paymentCollection.insertOne(payment);
-    //     let { donationAmount, petId } = payment;
-    //     if (donationAmount && petId) {
-    //       donationAmount = parseFloat(donationAmount);
-    //       const campaignUpdateResult = await donationCampaignsCollection.updateOne(
-    //         { _id: new ObjectId(petId) },
-    //         { $inc: { donatedAmount: donationAmount } },
-    //         { upsert: true }
-    //       );
-    //       console.log('Campaign Update Result:', campaignUpdateResult);
-    //     }
-    //     res.status(200).send({ message: 'Payment processed successfully', paymentResult });
-    //   } catch (error) {
-    //     console.error('Error processing payment:', error);
-    //     res.status(500).send({ error: 'An error occurred while processing the payment' });
-    //   }
-    // });
+    app.post('/payments', async (req, res) => {
+      const payment = req.body;
+      try {
+        const paymentResult = await paymentCollection.insertOne(payment);
+        let { donationAmount, petId } = payment;
+        if (donationAmount && petId) {
+          donationAmount = parseFloat(donationAmount);
+          const campaignUpdateResult = await donationCampaignsCollection.updateOne(
+            { _id: new ObjectId(petId) },
+            { $inc: { donatedAmount: donationAmount } },
+            { upsert: true }
+          );
+          console.log('Campaign Update Result:', campaignUpdateResult);
+        }
+        res.status(200).send({ message: 'Payment processed successfully', paymentResult });
+      } catch (error) {
+        console.error('Error processing payment:', error);
+        res.status(500).send({ error: 'An error occurred while processing the payment' });
+      }
+    });
 
-    // app.get('/payments/:email', verifyToken, async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email: email };
-    //   const result = await paymentCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.get('/payments/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    // app.get('/payments/user/:petId', verifyToken, async (req, res) => {
-    //   const id = req.params.petId;
-    //   const query = { petId: id };
-    //   const result = await paymentCollection.find(query).toArray();
-    //   res.send(result);
-    // });
+    app.get('/payments/user/:petId', verifyToken, async (req, res) => {
+      const id = req.params.petId;
+      const query = { petId: id };
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    // app.delete('/payments/:id', verifyToken, async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: new ObjectId(id) };
-    //   const result = await paymentCollection.deleteOne(query);
-    //   if (result.deletedCount === 1) {
-    //     res.send({ message: 'Donation removed successfully.' });
-    //   } else {
-    //     res.send({ message: 'No donation found to remove.' });
-    //   }
-    // });
+    app.delete('/payments/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await paymentCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        res.send({ message: 'Donation removed successfully.' });
+      } else {
+        res.send({ message: 'No donation found to remove.' });
+      }
+    });
 
-    // app.patch('/payments/refund/:id', async (req, res) => {
-    //   const id = req.params.id;
-    //   const payment = req.body;
-    //   const { donationAmount, petId } = payment.payment || {};
-    //   if (donationAmount && petId) {
-    //     const campaignUpdateResult = await donationCampaignsCollection.updateOne(
-    //       { _id: new ObjectId(petId) },
-    //       { $inc: { donatedAmount: -donationAmount } }
-    //     );
-    //     console.log('Campaign Update Result:', campaignUpdateResult);
-    //   }
-    //   const query = { _id: new ObjectId(id) };
-    //   const updatedDoc = {
-    //     $set: {
-    //       refund: 'true',
-    //     }
-    //   };
-    //   const result = await paymentCollection.updateOne(query, updatedDoc, { upsert: true });
-    //   return res.send(result);
-    // });
+    app.patch('/payments/refund/:id', async (req, res) => {
+      const id = req.params.id;
+      const payment = req.body;
+      const { donationAmount, petId } = payment.payment || {};
+      if (donationAmount && petId) {
+        const campaignUpdateResult = await donationCampaignsCollection.updateOne(
+          { _id: new ObjectId(petId) },
+          { $inc: { donatedAmount: -donationAmount } }
+        );
+        console.log('Campaign Update Result:', campaignUpdateResult);
+      }
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          refund: 'true',
+        }
+      };
+      const result = await paymentCollection.updateOne(query, updatedDoc, { upsert: true });
+      return res.send(result);
+    });
 
     // Connect to MongoDB
     // await client.connect();
